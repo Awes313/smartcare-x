@@ -1,0 +1,94 @@
+/* SmartCare X — layout & component refinements on top of Bootstrap 5.
+   Brand colors are defined as CSS variables in templates/base.html so
+   both static CSS and inline template styles share one source of truth. */
+
+body {
+  min-height: 100vh;
+}
+
+main {
+  min-height: calc(100vh - 220px);
+  padding-top: 1.5rem;
+  padding-bottom: 3rem;
+}
+
+.navbar .nav-link {
+  font-weight: 500;
+}
+
+.navbar .nav-link:hover {
+  color: var(--sc-primary) !important;
+}
+
+/* Cards */
+.card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.card.h-100:hover {
+  transform: translateY(-2px);
+}
+
+/* Buttons */
+.btn {
+  border-radius: 10px;
+  font-weight: 500;
+}
+.btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(120, 154, 153, 0.35);
+}
+
+/* Form controls */
+.form-control, .form-select {
+  border-radius: 10px;
+  border-color: #dfe3e3;
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--sc-primary);
+  box-shadow: 0 0 0 0.2rem rgba(120, 154, 153, 0.25);
+}
+
+/* Tables */
+.table thead {
+  background-color: #f1f3f3;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.table > :not(caption) > * > * {
+  border-bottom-color: #eceeee;
+}
+
+/* Badges */
+.badge {
+  font-weight: 500;
+  padding: 0.45em 0.75em;
+  border-radius: 8px;
+}
+
+/* Pagination */
+.page-link {
+  color: var(--sc-dark);
+  border-color: #e2e5e5;
+}
+
+/* Loading spinner (shown/hidden via app.js on form submit) */
+.sc-spinner-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1090;
+}
+.sc-spinner-overlay.active {
+  display: flex;
+}
+
+/* Utility */
+.text-sc-primary { color: var(--sc-primary) !important; }
+.bg-sc-soft { background-color: var(--sc-soft) !important; }
+
+@media (max-width: 576px) {
+  main { padding-top: 1rem; }
+}
