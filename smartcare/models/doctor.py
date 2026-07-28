@@ -31,14 +31,14 @@ class Doctor(db.Model):
 
 
 class DoctorAvailability(db.Model):
-    """A recurring weekly availability window, e.g. Monday 09:00-13:00."""
+    """Doctor's weekly availability."""
 
     __tablename__ = "doctor_availability"
 
     id = db.Column(db.Integer, primary_key=True)
     doctor_id = db.Column(db.Integer, db.ForeignKey("doctors.id"), nullable=False)
 
-    day_of_week = db.Column(db.SmallInteger, nullable=False)  # 0=Monday ... 6=Sunday
+    day_of_week = db.Column(db.SmallInteger, nullable=False)  # Monday=0, Sunday=6
     start_time = db.Column(db.Time, nullable=False)
     end_time = db.Column(db.Time, nullable=False)
     slot_duration_minutes = db.Column(db.Integer, default=15, nullable=False)

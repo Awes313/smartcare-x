@@ -1,8 +1,4 @@
-"""
-Authentication support logic: signed email-verification tokens (via
-itsdangerous, a Flask dependency) and password-reset token issuance/
-consumption backed by the PasswordResetToken model.
-"""
+"""Authentication helper functions."""
 
 from datetime import datetime
 
@@ -41,7 +37,7 @@ def issue_password_reset_token(user):
 
 
 def consume_password_reset_token(raw_token, new_password):
-    """Returns True on success, False if the token is invalid/expired/used."""
+    """Return True if the password is reset successfully."""
     reset_token = PasswordResetToken.query.filter_by(token=raw_token).first()
     if not reset_token or not reset_token.is_valid:
         return False

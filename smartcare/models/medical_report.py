@@ -11,10 +11,9 @@ class MedicalReport(db.Model):
     doctor_id = db.Column(db.Integer, db.ForeignKey("doctors.id"), nullable=True)
 
     title = db.Column(db.String(150), nullable=False)
-    # file_path is set for uploaded scans/X-rays. results_json is set for
-    # doctor-entered test values (e.g. CBC), which get rendered into a PDF
-    # on demand — never stored as a static file, so there's no risk of one
-    # patient's downloaded report actually containing another patient's data.
+
+    # Uploaded report path (if available).
+    # Generated reports use results_json to create the PDF when needed.
     file_path = db.Column(db.String(255), nullable=True)
     results_json = db.Column(db.Text, nullable=True)
     report_type = db.Column(db.String(30), default="lab")  # lab / scan / other
@@ -25,8 +24,7 @@ class MedicalReport(db.Model):
 
     @property
     def is_generated(self):
-        """True if this report's PDF is built on-the-fly from typed-in values,
-        rather than being a doctor-uploaded file."""
+        """Returns True for reports generated from stored results."""
         return self.file_path is None and self.results_json is not None
 
     def __repr__(self):

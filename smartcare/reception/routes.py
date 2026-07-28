@@ -97,11 +97,7 @@ def register_walkin():
             flash(str(exc), "danger")
             return render_template("reception/walkin_register.html", form=form)
 
-        # Mirrors real front-desk practice: OPD/consultation fee is
-        # collected right at registration, not left for reception to
-        # remember to bill later. This keeps walk-ins consistent with the
-        # online flow, where the consultation-fee bill is also generated
-        # automatically at booking time (see book() in patient/routes.py).
+        # Create the consultation bill during registration.
         doctor = Doctor.query.get(form.doctor_id.data)
         if doctor.consultation_fee and doctor.consultation_fee > 0:
             create_bill(
@@ -164,9 +160,7 @@ def manage_appointments():
 def cancel_appointment_route(appointment_id):
     appointment = Appointment.query.get_or_404(appointment_id)
     cancel_appointment(appointment)
-    # Same billing cleanup doctor/patient cancellations already get —
-    # refund the fee if it was paid, or void the bill if it wasn't, so a
-    # cancelled visit never leaves a collectible-looking charge behind.
+    # Update billing after appointment cancellation.
     mark_refund_pending(appointment)
     send_appointment_cancelled(appointment)
     flash("Appointment cancelled.", "info")

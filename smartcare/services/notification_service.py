@@ -1,5 +1,3 @@
-"""In-app notification creation and read-state management."""
-
 from smartcare.extensions import db
 from smartcare.models.notification import Notification
 

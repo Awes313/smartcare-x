@@ -1,10 +1,4 @@
-"""
-Bootstraps a fresh database with the minimum data needed to log in and
-explore the app: one admin account, a handful of departments, and a small
-medicine catalog with starting stock.
-
-Run via:  flask seed-db
-"""
+"""Database seed utilities."""
 
 import os
 

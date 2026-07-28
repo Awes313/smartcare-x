@@ -1,9 +1,3 @@
-"""
-Secure file upload handling for profile photos and lab/medical reports.
-Every saved file gets a UUID-based name to avoid collisions and to stop
-users from controlling server-side file paths via the original filename.
-"""
-
 import os
 import uuid
 
@@ -21,11 +15,7 @@ def _unique_filename(original_filename):
 
 
 def save_profile_photo(file_storage):
-    """
-    file_storage: werkzeug.datastructures.FileStorage from request.files
-    Returns the saved filename (not the full path) to store on User.profile_photo,
-    or None if no valid file was provided.
-    """
+    """Save a profile photo and return its filename."""
     if not file_storage or file_storage.filename == "":
         return None
 
@@ -41,10 +31,7 @@ def save_profile_photo(file_storage):
 
 
 def save_medical_report(file_storage):
-    """
-    Saves a lab report / scan document (PDF or image).
-    Returns the relative path to store on MedicalReport.file_path.
-    """
+    """Save a medical report and return its relative path."""
     if not file_storage or file_storage.filename == "":
         raise ValueError("No file was provided.")
 
@@ -60,7 +47,7 @@ def save_medical_report(file_storage):
 
 
 def delete_uploaded_file(relative_path):
-    """Best-effort delete; never raises if the file is already gone."""
+    """Delete an uploaded file if it exists."""
     full_path = os.path.join(current_app.config["UPLOAD_FOLDER"], relative_path)
     try:
         os.remove(full_path)

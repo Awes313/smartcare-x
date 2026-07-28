@@ -90,14 +90,8 @@ def delete_user(user_id):
         flash("You can't delete your own account while logged in.", "danger")
         return redirect(url_for("admin.manage_users"))
 
-    # Financial records must never disappear silently. If this is a
-    # patient with any bill that still has money owed either direction —
-    # unpaid/partial (they owe the hospital) or refund_pending (the
-    # hospital owes them) — deleting the account would cascade-delete
-    # those bills along with it (see Patient.bills cascade), erasing the
-    # only record that money was ever owed. Block the delete and point
-    # the admin at Deactivate instead, which preserves the account (and
-    # its bills) while still locking the patient out.
+    # Prevent deletion if the patient has pending financial records.
+    # Use Deactivate instead to preserve billing history.
     if user.patient_profile:
         blocking_bills = Bill.query.filter(
             Bill.patient_id == user.patient_profile.id,
@@ -339,6 +333,7 @@ def audit_logs():
     audit_entries = get_recent_audit_logs(limit=100)
     activity_entries = get_recent_activity_logs(limit=100)
     return render_template("admin/audit_logs.html", audit_entries=audit_entries, activity_entries=activity_entries)
+
 
 # ---------------------------------------------------------------- Contact Messages
 @admin_bp.route("/contact-messages")

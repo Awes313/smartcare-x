@@ -43,8 +43,7 @@ def doctors_directory():
 def contact():
     form = ContactForm()
     if form.validate_on_submit():
-        # "Other" resolves to whatever the visitor typed in subject_other;
-        # every other option is used as-is.
+        # Use custom subject when "Other" is selected.
         final_subject = (
             form.subject_other.data.strip()
             if form.subject.data == "Other" and form.subject_other.data
@@ -73,11 +72,7 @@ def submit_review():
     patient_id = current_user.patient_profile.id
 
     if form.validate_on_submit():
-        # One review per patient, period — not per doctor. Reviews here are
-        # general platform feedback (no doctor is shown on the card), so
-        # letting the same patient stack up multiple entries would just
-        # crowd out other patients' feedback in the homepage's 6-review
-        # window. Resubmitting updates their existing review instead.
+        # Allow one review per patient. Existing reviews are updated.
         existing_review = Review.query.filter_by(patient_id=patient_id).first()
 
         if existing_review:

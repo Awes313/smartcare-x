@@ -1,6 +1,4 @@
-/* SmartCare X — layout & component refinements on top of Bootstrap 5.
-   Brand colors are defined as CSS variables in templates/base.html so
-   both static CSS and inline template styles share one source of truth. */
+/* SmartCare X custom styles */
 
 body {
   min-height: 100vh;
@@ -71,7 +69,7 @@ main {
   border-color: #e2e5e5;
 }
 
-/* Loading spinner (shown/hidden via app.js on form submit) */
+/* Loading overlay */
 .sc-spinner-overlay {
   position: fixed;
   inset: 0;

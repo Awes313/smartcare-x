@@ -1,8 +1,8 @@
-# --- Core framework ---
+# Core
 Flask==3.0.3
 Werkzeug==3.0.3
 
-# --- Extensions ---
+# Flask Extensions
 Flask-Login==0.6.3
 Flask-Mail==0.10.0
 Flask-SQLAlchemy==3.1.1
@@ -11,21 +11,22 @@ Flask-Migrate==4.0.7
 WTForms==3.1.2
 email-validator==2.1.1
 
-# --- Database drivers ---
+# Database
 SQLAlchemy==2.0.30
 psycopg2-binary==2.9.9
 
-# --- Config / environment ---
+# Configuration
 python-dotenv==1.0.1
 itsdangerous==2.2.0
 
-# --- PDF & export utilities ---
+# PDF
 reportlab==4.2.0
 
-# --- Payments ---
+# Payment
 razorpay==1.4.2
 
-# --- Production server ---
+# Production
 gunicorn==22.0.0
 
+# Scheduler
 APScheduler

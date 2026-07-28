@@ -2,4 +2,4 @@ from flask import Blueprint
 
 auth_bp = Blueprint("auth", __name__, template_folder="../templates/auth")
 
-from smartcare.auth import routes  # noqa: E402,F401  (registers routes on import)
+from smartcare.auth import routes  # noqa: E402,F401

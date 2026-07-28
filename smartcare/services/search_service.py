@@ -1,9 +1,3 @@
-"""
-Search logic for patients, doctors, medicines, appointments, and a
-cross-entity global search (admin's "Search Everything"). All matching is
-done in Python/SQL here — templates just render whatever list comes back.
-"""
-
 from smartcare.models.appointment import Appointment
 from smartcare.models.doctor import Doctor
 from smartcare.models.medicine import Medicine
@@ -45,7 +39,7 @@ def search_medicines(term, limit=25):
 
 
 def search_appointments(term, limit=25):
-    """Matches on patient name, doctor name, or reason text."""
+    """Search appointments by patient, doctor, or reason."""
     like = f"%{term}%"
     patient_user = db_alias(User)
     doctor_user = db_alias(User)
@@ -68,7 +62,7 @@ def search_appointments(term, limit=25):
 
 
 def global_search(term, limit_per_entity=10):
-    """Used by the admin 'Search Everything' box — returns a dict of result lists."""
+    """Search across all supported entities."""
     return {
         "patients": search_patients(term, limit_per_entity),
         "doctors": search_doctors(term, limit_per_entity),
@@ -77,7 +71,6 @@ def global_search(term, limit_per_entity=10):
     }
 
 
-# --- small internal helpers to keep imports tidy above ---
 def db_or(*args):
     from sqlalchemy import or_
 

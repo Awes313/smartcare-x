@@ -1,10 +1,4 @@
-"""
-Application configuration.
-
-Config is split by environment so the same codebase runs unmodified in
-development (SQLite) and production (PostgreSQL on Render). The active
-config class is selected in smartcare/__init__.py via create_app(config_name).
-"""
+"""Application configuration."""
 
 import os
 from datetime import timedelta
@@ -23,19 +17,18 @@ def _bool_env(key, default=False):
 
 
 class BaseConfig:
-    """Shared settings across all environments."""
+    """Base configuration."""
 
     @classmethod
     def validate(cls):
-        """Override in subclasses that need to enforce required env vars
-        (see ProductionConfig). No-op by default."""
+        """Override in subclasses if validation is required."""
         pass
 
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-insecure-key-replace-me")
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    # --- Uploads ---
+    # Upload settings
     _upload_folder_raw = os.environ.get("UPLOAD_FOLDER", os.path.join("smartcare", "static", "uploads"))
     UPLOAD_FOLDER = (
         _upload_folder_raw if os.path.isabs(_upload_folder_raw) else os.path.join(BASE_DIR, _upload_folder_raw)
@@ -46,7 +39,7 @@ class BaseConfig:
     ALLOWED_DOCUMENT_EXTENSIONS = {"pdf", "png", "jpg", "jpeg"}
     MAX_CONTENT_LENGTH = int(os.environ.get("MAX_CONTENT_LENGTH_MB", 5)) * 1024 * 1024
 
-    # --- Mail ---
+    # Mail settings
     MAIL_SERVER = os.environ.get("MAIL_SERVER", "smtp.gmail.com")
     MAIL_PORT = int(os.environ.get("MAIL_PORT", 587))
     MAIL_USE_TLS = _bool_env("MAIL_USE_TLS", True)
@@ -55,17 +48,17 @@ class BaseConfig:
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
     MAIL_DEFAULT_SENDER = os.environ.get("MAIL_DEFAULT_SENDER", "SmartCare X <no-reply@smartcarex.local>")
 
-    # --- Payments (Razorpay test/sandbox) ---
+    # Razorpay settings
     RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID")
     RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET")
     RAZORPAY_CURRENCY = "INR"
 
-    # --- App-level settings ---
+    # Application settings
     ITEMS_PER_PAGE = int(os.environ.get("ITEMS_PER_PAGE", 10))
     PASSWORD_RESET_TOKEN_TTL = timedelta(hours=1)
     EMAIL_VERIFICATION_TOKEN_TTL = timedelta(hours=24)
 
-    # --- Session / cookies ---
+    # Session settings
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = "Lax"
     REMEMBER_COOKIE_DURATION = timedelta(days=14)
@@ -78,8 +71,7 @@ class DevelopmentConfig(BaseConfig):
 
 
 def _normalize_db_url(raw_url):
-    """Render (and some other hosts) hand out postgres:// URLs, but
-    SQLAlchemy 1.4+/2.x requires the postgresql:// scheme."""
+    """Normalize PostgreSQL connection URL."""
     if raw_url and raw_url.startswith("postgres://"):
         return raw_url.replace("postgres://", "postgresql://", 1)
     return raw_url
@@ -96,10 +88,7 @@ class ProductionConfig(BaseConfig):
             raise RuntimeError(
                 "DATABASE_URL environment variable must be set in production."
             )
-        # Prevents accidentally deploying with the insecure default
-        # SECRET_KEY (used to sign session cookies and password-reset/
-        # email-verification tokens) — if this leaked or stayed as the
-        # well-known default, anyone could forge those tokens.
+
         if not cls.SECRET_KEY or cls.SECRET_KEY == "dev-insecure-key-replace-me":
             raise RuntimeError(
                 "SECRET_KEY environment variable must be set to a strong, unique value in production."

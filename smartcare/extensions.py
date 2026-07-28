@@ -1,9 +1,4 @@
-"""
-Central place to instantiate Flask extensions without binding them to an
-app yet. Each extension is initialized (app.init_app(app)) inside
-create_app(), which avoids circular imports between blueprints/models
-and the app factory.
-"""
+"""Flask extension instances."""
 
 from flask_login import LoginManager
 from flask_mail import Mail
@@ -17,6 +12,5 @@ login_manager = LoginManager()
 mail = Mail()
 csrf = CSRFProtect()
 
-# Sensible Flask-Login defaults; the actual endpoint name is set once the
-# auth blueprint is registered (see smartcare/__init__.py).
+# Default Flask-Login settings.
 login_manager.login_message_category = "warning"

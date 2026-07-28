@@ -1,10 +1,3 @@
-"""
-Background job scheduling (APScheduler). Runs inside the same process as
-the Flask app — fine for a single-instance deployment like this one; a
-multi-worker production setup would move this to a separate worker process
-to avoid the job running once per worker.
-"""
-
 import logging
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -18,8 +11,7 @@ _scheduler = None
 
 
 def _send_due_bill_reminders(app):
-    """The actual job body. Needs an explicit app context because
-    APScheduler runs this outside of any Flask request."""
+    """Send payment reminder emails for due medicine bills."""
     with app.app_context():
         bills = get_bills_needing_reminder()
         for bill in bills:
@@ -32,7 +24,7 @@ def _send_due_bill_reminders(app):
 def init_scheduler(app):
     global _scheduler
     if _scheduler is not None:
-        return  # already running — never start a second one
+        return  # Scheduler already running.
 
     _scheduler = BackgroundScheduler(daemon=True)
     _scheduler.add_job(

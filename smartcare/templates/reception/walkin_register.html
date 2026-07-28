@@ -77,6 +77,30 @@ document.addEventListener('DOMContentLoaded', function () {
   const doctorSelect = document.getElementById('doctorSelect');
   const dateInput = document.getElementById('dateInput');
   const timeSlotSelect = document.getElementById('timeSlotSelect');
+  const walkinForm = document.getElementById('walkinForm');
+
+  // Prevent selecting past dates.
+  if (dateInput) {
+    dateInput.min = new Date().toISOString().split('T')[0];
+  }
+
+  // Check if the selected slot has already passed.
+  function isSlotInPast(dateStr, slotLabel) {
+    if (!dateStr || !slotLabel) return false;
+    const todayStr = new Date().toISOString().split('T')[0];
+    if (dateStr < todayStr) return true;
+    if (dateStr > todayStr) return false;
+    const match = slotLabel.split(' - ')[0].trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+    if (!match) return false;
+    let hours = parseInt(match[1], 10);
+    const minutes = parseInt(match[2], 10);
+    const period = match[3].toUpperCase();
+    if (period === 'PM' && hours !== 12) hours += 12;
+    if (period === 'AM' && hours === 12) hours = 0;
+    const slotDateTime = new Date();
+    slotDateTime.setHours(hours, minutes, 0, 0);
+    return slotDateTime <= new Date();
+  }
 
   function refreshSlots() {
     const doctorId = doctorSelect.value;
@@ -117,6 +141,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
   doctorSelect.addEventListener('change', refreshSlots);
   dateInput.addEventListener('change', refreshSlots);
+
+  if (walkinForm) {
+    walkinForm.addEventListener('submit', function (e) {
+      if (!timeSlotSelect.value) return; // Let required-field validation handle this.
+      if (isSlotInPast(dateInput.value, timeSlotSelect.value)) {
+        e.preventDefault();
+        alert('This date/time has already passed. Please choose a future slot.');
+      }
+    });
+  }
 });
 </script>
 {% endblock %}

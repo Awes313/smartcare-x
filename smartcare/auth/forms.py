@@ -13,8 +13,7 @@ class LoginForm(FlaskForm):
 
 
 class RegisterForm(FlaskForm):
-    """Public self-registration — always creates a Patient account.
-    Doctor/Receptionist accounts are created by an Admin from the admin panel."""
+    """Registration form for patient accounts."""
 
     full_name = StringField("Full Name", validators=[DataRequired(), Length(min=2, max=120)])
     email = StringField("Email", validators=[DataRequired(), Email()])

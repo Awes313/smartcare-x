@@ -12,8 +12,7 @@ from smartcare.models.patient import Patient
 
 
 def dashboard_kpis():
-    # Excludes voided bills (cancelled before payment) — those charges
-    # were never real revenue and shouldn't inflate this figure.
+    # Exclude voided bills from revenue.
     total_revenue = (
         db.session.query(func.coalesce(func.sum(Bill.total), 0))
         .filter(Bill.status != "void")

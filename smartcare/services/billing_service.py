@@ -51,12 +51,10 @@ def create_bill(patient_id, generated_by_user_id, line_items, appointment_id=Non
 
 def record_payment(bill, amount, method="cash"):
     payment = Payment(amount=_round2(amount), method=method)
-    # Appending through the relationship (instead of setting bill_id
-    # directly) keeps bill.payments in sync in-memory immediately, so the
-    # balance_due/status check right below always sees this payment —
-    # avoids a stale-collection bug where the bill's status could get
-    # stuck on "unpaid" even after the full amount was paid.
+
+    # Add payment through the relationship to keep the bill state in sync.
     bill.payments.append(payment)
+
     db.session.add(payment)
     db.session.flush()
 
@@ -70,18 +68,7 @@ def record_payment(bill, amount, method="cash"):
 
 
 def mark_refund_pending(appointment):
-    """Called when an appointment gets cancelled/rejected. Handles its
-    consultation-fee bill (if any) according to what was actually paid:
-      - "paid"            -> flag for refund (money already changed hands,
-                              mirrors real payment gateways: cancelling
-                              never triggers an instant cash reversal)
-      - "unpaid"/"partial" -> void the bill outright, since no fee should
-                              ever be collected for a visit that won't
-                              happen. Without this, an unpaid bill for a
-                              cancelled appointment would sit forever in
-                              reception's Billing list, risking staff
-                              collecting payment for a cancelled visit.
-    No-op if there's no bill at all."""
+    """Update the bill status when an appointment is cancelled or rejected."""
     bill = appointment.bill
     if not bill:
         return
@@ -95,20 +82,13 @@ def mark_refund_pending(appointment):
 
 
 def mark_bill_refunded(bill):
-    """Called by an admin once the refund has actually been processed
-    outside the app (e.g. via the Razorpay dashboard) — this is a manual
-    confirmation step, not an automatic one, since only finance/admin can
-    verify money actually moved."""
+    """Mark a bill as refunded after manual confirmation."""
     bill.status = "refunded"
     db.session.commit()
 
 
 def get_unpaid_bills(patient_id=None, channel=None):
-    """Used by the PATIENT's own dashboard. Passing channel explicitly
-    filters to just that collection path. Counter bills are intentionally
-    excluded when channel="online" is passed, since a patient paying those
-    via Razorpay while reception ALSO collects cash/card for the same bill
-    would be a double payment."""
+    """Return unpaid or partially paid bills."""
     query = Bill.query.filter(Bill.status.in_(["unpaid", "partial"]))
     if patient_id:
         query = query.filter_by(patient_id=patient_id)
@@ -118,13 +98,7 @@ def get_unpaid_bills(patient_id=None, channel=None):
 
 
 def get_receptionist_unpaid_bills():
-    """Unpaid bills reception is actually allowed to collect cash/card
-    payment for — i.e. counter-channel bills only. Online-channel bills
-    (online booking consultation fees, online-booked prescription medicine
-    bills) are deliberately excluded — those are Razorpay-only by design,
-    so reception never gets a second, conflicting way to collect the same
-    charge. Voided bills (see mark_refund_pending) are also excluded since
-    their status is no longer "unpaid"/"partial"."""
+    """Return unpaid counter bills for reception."""
     return (
         Bill.query.filter(Bill.status.in_(["unpaid", "partial"]))
         .filter_by(channel="counter")
@@ -141,10 +115,7 @@ def get_refund_pending_bills(patient_id=None):
 
 
 def get_bills_needing_reminder():
-    """Bills that are unpaid, have a due date, haven't been reminded yet,
-    and are within 1 day of (or past) their due date — used by the
-    scheduled reminder job so it doesn't email every unpaid bill daily,
-    only ones actually approaching/past the deadline."""
+    """Return bills that are due for a payment reminder."""
     cutoff = datetime.utcnow() + timedelta(days=1)
     return (
         Bill.query.filter(Bill.status.in_(["unpaid", "partial"]))

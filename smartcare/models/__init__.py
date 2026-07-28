@@ -1,9 +1,4 @@
-"""
-Importing every model here means `smartcare.models` alone is enough to
-register full metadata with SQLAlchemy — this is what Flask-Migrate scans
-when generating migrations, and it's what lets `db.create_all()` build every
-table without the caller needing to know which files exist.
-"""
+"""Application models."""
 
 from smartcare.models.user import User, RoleEnum
 from smartcare.models.patient import Patient

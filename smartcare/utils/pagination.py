@@ -1,8 +1,4 @@
-"""
-Thin wrapper around Flask-SQLAlchemy 3.x's db.paginate(), so every
-blueprint paginates lists (patients, appointments, medicines, bills...) the
-same way and templates can rely on one consistent object shape.
-"""
+"""Pagination helpers."""
 
 from flask import current_app, request
 

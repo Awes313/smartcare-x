@@ -47,7 +47,7 @@ def register():
         )
         user.set_password(form.password.data)
         db.session.add(user)
-        db.session.flush()  # get user.id before creating the Patient row
+        db.session.flush()
 
         db.session.add(Patient(user_id=user.id))
         db.session.commit()

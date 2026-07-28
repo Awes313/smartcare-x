@@ -1,4 +1,4 @@
-"""Thin write-helpers for AuditLog (data changes) and ActivityLog (general activity)."""
+"""Audit and activity logging helpers."""
 
 from smartcare.extensions import db
 from smartcare.models.audit_log import ActivityLog, AuditLog

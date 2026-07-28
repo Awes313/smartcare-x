@@ -1,14 +1,3 @@
-"""
-Access-control decorators layered on top of Flask-Login's @login_required.
-
-Usage:
-    @patient_bp.route("/dashboard")
-    @login_required
-    @role_required("patient")
-    def dashboard():
-        ...
-"""
-
 from functools import wraps
 
 from flask import abort, flash, redirect, url_for
@@ -18,10 +7,7 @@ from smartcare.models.user import RoleEnum
 
 
 def role_required(*allowed_roles):
-    """
-    Restrict a view to one or more roles, e.g. @role_required("doctor", "admin").
-    Must be used *below* @login_required so current_user is guaranteed to exist.
-    """
+    """Allow access only to the specified user roles."""
     normalized = {RoleEnum(r) if not isinstance(r, RoleEnum) else r for r in allowed_roles}
 
     def decorator(view_func):
@@ -39,7 +25,7 @@ def role_required(*allowed_roles):
 
 
 def verified_email_required(view_func):
-    """Blocks access until the user has confirmed their email address."""
+    """Require a verified email address."""
 
     @wraps(view_func)
     def wrapped(*args, **kwargs):
@@ -54,7 +40,7 @@ def verified_email_required(view_func):
 
 
 def active_account_required(view_func):
-    """Blocks access for deactivated accounts (e.g. suspended by admin)."""
+    """Allow access only to active accounts."""
 
     @wraps(view_func)
     def wrapped(*args, **kwargs):

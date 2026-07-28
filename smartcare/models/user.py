@@ -15,11 +15,7 @@ class RoleEnum(enum.Enum):
 
 
 class User(db.Model, UserMixin):
-    """
-    Base identity table. Role-specific data (Patient/Doctor/Receptionist)
-    lives in its own one-to-one table keyed on user_id, so auth concerns
-    stay separate from clinical/administrative concerns.
-    """
+    """User model with role-specific profile relationships."""
 
     __tablename__ = "users"
 
@@ -37,7 +33,7 @@ class User(db.Model, UserMixin):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    # --- One-to-one role extensions ---
+    # Role-specific profiles
     patient_profile = db.relationship("Patient", back_populates="user", uselist=False, cascade="all, delete-orphan")
     doctor_profile = db.relationship("Doctor", back_populates="user", uselist=False, cascade="all, delete-orphan")
     receptionist_profile = db.relationship("Receptionist", back_populates="user", uselist=False, cascade="all, delete-orphan")
@@ -47,14 +43,14 @@ class User(db.Model, UserMixin):
     activity_logs = db.relationship("ActivityLog", back_populates="user")
     password_reset_tokens = db.relationship("PasswordResetToken", back_populates="user", cascade="all, delete-orphan")
 
-    # --- Password helpers ---
+    # Password helpers
     def set_password(self, raw_password):
         self.password_hash = generate_password_hash(raw_password)
 
     def check_password(self, raw_password):
         return check_password_hash(self.password_hash, raw_password)
 
-    # --- Convenience role checks (used by templates/decorators) ---
+    # Role checks
     @property
     def is_patient(self):
         return self.role == RoleEnum.PATIENT
@@ -72,8 +68,7 @@ class User(db.Model, UserMixin):
         return self.role == RoleEnum.ADMIN
 
     def get_id(self):
-        # Required override name clash guard: Flask-Login's UserMixin already
-        # provides this via `id`, kept explicit here for clarity.
+        # Explicit implementation for Flask-Login.
         return str(self.id)
 
     def __repr__(self):

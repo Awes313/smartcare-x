@@ -124,20 +124,32 @@ def complete(appointment_id):
         flash(f"This appointment is {appointment.status.value} — it can't be marked completed.", "warning")
         return redirect(request.referrer or url_for("doctor.today_appointments"))
 
-    # A visit isn't truly "done" if the patient still owes for prescribed
-    # medicines — completing it early would let the appointment vanish
-    # from active views while an unpaid/partial bill sits unresolved. Only
-    # checks the bill tied to THIS appointment's prescription; if no
-    # prescription was written (or its medicines were free), there's no
-    # bill and completion proceeds normally.
+    # A visit isn't truly "done" while ANY bill tied to it is still
+    # unpaid — this covers both:
+    #   1. The consultation-fee bill (appointment.bill) — for walk-ins,
+    #      this is a counter bill reception is expected to collect at the
+    #      desk before/after the visit. Without this check, a doctor could
+    #      complete a walk-in that reception never actually billed.
+    #   2. The medicine bill from the written prescription, if any.
+    # Either bill sitting unpaid means the visit isn't financially closed.
+    if appointment.bill and appointment.bill.status in ("unpaid", "partial"):
+        pending_bill = appointment.bill
+        flash(
+            f"Can't mark this appointment completed — the consultation fee is still unpaid "
+            f"(₹{pending_bill.balance_due} due, {pending_bill.channel} payment). "
+            "Reception must collect payment first.",
+            "danger",
+        )
+        return redirect(request.referrer or url_for("doctor.today_appointments"))
+
     if appointment.prescription:
-        pending_bill = Bill.query.filter_by(
+        pending_medicine_bill = Bill.query.filter_by(
             prescription_id=appointment.prescription.id
         ).filter(Bill.status.in_(["unpaid", "partial"])).first()
-        if pending_bill:
+        if pending_medicine_bill:
             flash(
                 f"Can't mark this appointment completed — the patient still has a pending medicine bill of "
-                f"₹{pending_bill.balance_due} ({pending_bill.channel} payment).",
+                f"₹{pending_medicine_bill.balance_due} ({pending_medicine_bill.channel} payment).",
                 "danger",
             )
             return redirect(request.referrer or url_for("doctor.today_appointments"))
@@ -222,17 +234,14 @@ def patient_records(patient_id):
 def write_prescription(appointment_id):
     appointment = Appointment.query.filter_by(id=appointment_id, doctor_id=_current_doctor().id).first_or_404()
 
-    # An appointment can only have ONE prescription (Appointment.prescription
-    # is a strict one-to-one). Blocking re-submission here — not just hiding
-    # the button in the UI — is what actually prevents a doctor from
-    # generating a duplicate medicine bill for the same visit.
+    # Only one prescription is allowed per appointment.
     if appointment.prescription:
         flash("A prescription has already been written for this appointment.", "info")
         return redirect(url_for("doctor.patient_records", patient_id=appointment.patient_id))
 
     form = PrescriptionForm()
-    # Leading placeholder — its value (0) is falsy, so WTForms' DataRequired
-    # correctly rejects a submission where the doctor never picked a real medicine.
+
+    # Default option for medicine selection.
     medicine_choices = [(0, "Select Medicine...")] + [
         (m.id, m.name) for m in Medicine.query.order_by(Medicine.name).all()
     ]
@@ -245,8 +254,7 @@ def write_prescription(appointment_id):
         items = [
             {
                 "medicine_id": item.medicine_id.data,
-                # "Other" resolves to whatever the doctor typed in the
-                # matching *_other field; otherwise the picked dropdown value is used as-is.
+                # Use custom value when "Other" is selected.
                 "dosage": item.dosage_other.data.strip() if item.dosage.data == "other" and item.dosage_other.data else item.dosage.data,
                 "frequency": item.frequency_other.data.strip() if item.frequency.data == "other" and item.frequency_other.data else item.frequency.data,
                 "duration_days": item.duration_days.data,
@@ -270,14 +278,7 @@ def write_prescription(appointment_id):
         send_prescription_ready(prescription)
         flash("Prescription saved and shared with the patient.", "success")
 
-        # Every prescription with priced medicines generates a bill — the
-        # only question is WHICH channel collects it. Online-booked
-        # appointments (created_by == "self") get an online Razorpay bill
-        # with a payment deadline; walk-ins (created_by == "reception")
-        # get a counter bill that shows up on reception's Billing page for
-        # same-visit cash/card collection. Either way, medicine dispensed
-        # from inventory is always billed to someone — no silent stock
-        # deductions with no matching charge.
+        # Generate a medicine bill when prescribed medicines have a price.
         medicine_line_items = []
         for item in items:
             medicine = Medicine.query.get(item["medicine_id"])
@@ -351,10 +352,7 @@ def upload_report():
 
 @doctor_bp.route("/reports/generate", methods=["GET", "POST"])
 def generate_report():
-    """Doctor types in test parameter values; the PDF is built on-demand
-    from the database (see build_generated_lab_report_pdf), so the patient
-    name printed on it always matches whoever it's actually attached to —
-    there's no uploaded file that could belong to someone else."""
+    """Generate a lab report from the submitted test results."""
     form = LabResultForm()
     form.patient_id.choices = [
         (p.id, p.full_name)
@@ -425,13 +423,7 @@ def availability():
 def delete_availability(slot_id):
     slot = DoctorAvailability.query.filter_by(id=slot_id, doctor_id=_current_doctor().id).first_or_404()
 
-    # A recurring weekly window (e.g. every Monday 9-5) can't be safely
-    # deleted if there are already-booked future appointments that fall on
-    # that weekday — the patient committed to (and often paid for) that
-    # slot based on this availability existing. Blocking here prevents a
-    # doctor from silently pulling the rug out from under booked patients;
-    # they should cancel those appointments individually first, which
-    # already notifies the patient and handles any refund.
+    # Prevent removing availability that has upcoming bookings.
     upcoming_same_weekday = (
         Appointment.query.filter_by(doctor_id=slot.doctor_id)
         .filter(Appointment.status.in_([AppointmentStatus.PENDING, AppointmentStatus.APPROVED]))

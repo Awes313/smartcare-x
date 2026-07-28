@@ -1,5 +1,3 @@
-"""Reusable WTForms validators shared across auth/patient/doctor/reception/admin forms."""
-
 import re
 from datetime import date
 
@@ -37,7 +35,7 @@ def max_file_size_mb(max_mb):
         file_storage = field.data
         if not file_storage or not hasattr(file_storage, "stream") or not getattr(file_storage, "filename", None):
             return
-        file_storage.stream.seek(0, 2)  # seek to end
+        file_storage.stream.seek(0, 2)
         size_bytes = file_storage.stream.tell()
         file_storage.stream.seek(0)
         if size_bytes > max_mb * 1024 * 1024:

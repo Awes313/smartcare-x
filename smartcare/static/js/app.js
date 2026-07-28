@@ -1,8 +1,4 @@
-/* SmartCare X — minimal shared JavaScript.
-   Business logic never lives here; this only handles small UX niceties
-   (loading state, tooltips, auto-dismiss). Page-specific interactivity
-   (AJAX slot lookups, dynamic form rows) lives in each template's
-   {% block extra_js %}. */
+/* Shared JavaScript for common UI interactions. */
 
 document.addEventListener('DOMContentLoaded', function () {
   injectSpinnerOverlay();
@@ -23,16 +19,10 @@ function wireLoadingSpinner() {
   const overlay = document.querySelector('.sc-spinner-overlay');
   document.querySelectorAll('form:not([data-no-spinner])').forEach(function (form) {
     form.addEventListener('submit', function (event) {
-      // If the form has a confirm() dialog and the user cancels, this still
-      // fires — but the browser blocks navigation until confirm resolves,
-      // so the spinner briefly showing on a cancelled action is harmless.
+      // Do nothing if form submission is cancelled.
       if (event.defaultPrevented) return;
-      // Delay showing the overlay by 300ms — most page transitions on a
-      // local/fast connection finish before this timer fires, so the
-      // spinner never flashes on screen for quick operations. It only
-      // becomes visible for genuinely slow ones (large PDF generation,
-      // bill creation, etc.), which is when a loading indicator actually
-      // helps rather than just adding visual noise.
+
+      // Show the loading spinner after a short delay.
       setTimeout(function () {
         overlay.classList.add('active');
       }, 300);

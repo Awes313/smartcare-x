@@ -19,9 +19,7 @@ DAY_CHOICES = [
     (4, "Friday"), (5, "Saturday"), (6, "Sunday"),
 ]
 
-# Covers the most commonly prescribed strengths — tablets/capsules first,
-# then liquid/syrup doses. "Other" lets the doctor type anything not listed,
-# so this never blocks an unusual prescription.
+# Common dosage options.
 DOSAGE_CHOICES = [
     ("", "Select dosage..."),
     ("250mg", "250mg"),
@@ -42,8 +40,7 @@ DOSAGE_CHOICES = [
     ("other", "Other (specify)"),
 ]
 
-# Standard prescription frequency patterns (OD/BD/TDS/QID are common Indian
-# medical shorthand — spelled out here so patients can read them too).
+# Common frequency options.
 FREQUENCY_CHOICES = [
     ("", "Select frequency..."),
     ("Once daily (OD)", "Once daily (OD)"),
@@ -63,8 +60,7 @@ FREQUENCY_CHOICES = [
 
 
 class PrescriptionItemForm(FlaskForm):
-    """A single medicine line within a prescription. class Meta disables
-    per-subform CSRF since the parent PrescriptionForm already carries one."""
+    """Prescription item form."""
 
     class Meta:
         csrf = False
@@ -111,9 +107,7 @@ class ReportUploadForm(FlaskForm):
 
 
 class TestParameterForm(FlaskForm):
-    """A single row of a generated lab report — one measured value.
-    Field names deliberately avoid anything that collides with WTForms'
-    own Field attributes (e.g. never name a field 'description' or 'values')."""
+    """Generated lab report parameter."""
 
     class Meta:
         csrf = False

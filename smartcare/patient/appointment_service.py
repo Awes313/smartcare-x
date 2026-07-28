@@ -1,7 +1,4 @@
-"""
-Appointment booking logic: slot conflict checks, lifecycle transitions
-(approve/reject/cancel/reschedule), and walk-in token assignment.
-"""
+"""Appointment booking and scheduling services."""
 
 from datetime import datetime, timedelta
 
@@ -11,7 +8,7 @@ from smartcare.models.doctor import DoctorAvailability
 
 
 class AppointmentConflictError(Exception):
-    """Raised when a requested slot is already taken for that doctor."""
+    """Raised when the selected slot is unavailable."""
 
 
 def is_slot_taken(doctor_id, appointment_date, time_slot, exclude_appointment_id=None):
@@ -87,7 +84,7 @@ def mark_completed(appointment):
 
 
 def next_token_number(doctor_id, appointment_date):
-    """Assigns the next sequential token number for a doctor's queue on a given day."""
+    """Return the next token number for the doctor's queue."""
     last_token = (
         db.session.query(db.func.max(Appointment.token_number))
         .filter_by(doctor_id=doctor_id, appointment_date=appointment_date)
@@ -106,12 +103,8 @@ def register_walkin_appointment(patient_id, doctor_id, department_id, appointmen
 
 
 def get_available_slots(doctor_id, appointment_date):
-    """
-    Builds the list of bookable time-slot strings for a doctor on a given
-    date, derived from their recurring DoctorAvailability windows, split
-    into slot_duration_minutes chunks, minus slots already taken.
-    """
-    day_of_week = appointment_date.weekday()  # 0=Monday ... 6=Sunday
+    """Return available time slots for the selected date."""
+    day_of_week = appointment_date.weekday()
 
     windows = DoctorAvailability.query.filter_by(
         doctor_id=doctor_id, day_of_week=day_of_week, is_active=True

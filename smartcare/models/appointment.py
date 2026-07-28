@@ -25,15 +25,15 @@ class Appointment(db.Model):
     time_slot = db.Column(db.String(20), nullable=False)  # e.g. "10:00 AM - 10:15 AM"
     status = db.Column(db.Enum(AppointmentStatus), default=AppointmentStatus.PENDING, nullable=False, index=True)
     reason = db.Column(db.Text)
-    token_number = db.Column(db.Integer)  # assigned for walk-ins / same-day queue
+    token_number = db.Column(db.Integer)  # Assigned for walk-in appointments.
 
-    # "self" = patient booked online, "reception" = walk-in registered at desk
+    # Appointment source: self (online) or reception (walk-in).
     created_by = db.Column(db.String(20), default="self", nullable=False)
 
-    # "in_person" (default — covers walk-ins too) or "online" (video consultation)
+    # Consultation type: in_person or online.
     consultation_type = db.Column(db.String(20), default="in_person", nullable=False)
-    # Auto-generated free Jitsi Meet link, filled in only when an "online"
-    # appointment gets approved by the doctor (see approve_appointment()).
+
+    # Jitsi Meet link for approved online consultations.
     meeting_link = db.Column(db.String(255), nullable=True)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
@@ -47,13 +47,8 @@ class Appointment(db.Model):
     bill = db.relationship("Bill", back_populates="appointment", uselist=False)
 
     __table_args__ = (
-        # Database-level guarantee against double-booking: only one PENDING or
-        # APPROVED appointment can exist for a given doctor + date + time slot,
-        # even if two booking requests arrive at the exact same instant. This
-        # is a partial unique index — cancelled/rejected/completed appointments
-        # don't count, so a slot frees up again once its old booking is resolved.
-        # Note: SQLAlchemy's Enum column stores the Python enum MEMBER NAME
-        # ("PENDING"/"APPROVED"), not its .value ("pending"/"approved").
+        # Prevent double-booking for active appointments.
+        # SQLAlchemy Enum stores enum member names (PENDING, APPROVED).
         db.Index(
             "uq_doctor_date_slot_active",
             "doctor_id",

@@ -1,12 +1,3 @@
-"""
-Application factory for SmartCare X.
-
-Blueprints are imported lazily inside create_app() (rather than at module
-level) to avoid circular imports, since blueprint route modules import
-`db`/`login_manager` from smartcare.extensions, which in turn is imported
-here first.
-"""
-
 import os
 
 from flask import Flask, render_template
@@ -99,7 +90,7 @@ def _register_context_processors(app):
 def _register_cli_commands(app):
     @app.cli.command("seed-db")
     def seed_db():
-        """Seed the database with an initial admin user and departments."""
+        """Seed the database."""
         from smartcare.services.seed_service import run_seed
 
         run_seed()
@@ -107,12 +98,7 @@ def _register_cli_commands(app):
 
 
 def _init_scheduler(app):
-    """Starts the background job that emails payment reminders for
-    overdue/soon-due medicine bills (see scheduler_service.py).
-
-    Skipped in testing, and guarded against Flask's debug-mode reloader —
-    which spawns a parent + child process — so the scheduler only ever
-    starts once instead of twice (which would double-send every reminder)."""
+    """Initialize the background scheduler."""
     if app.config.get("TESTING"):
         return
     if app.debug and os.environ.get("WERKZEUG_RUN_MAIN") != "true":

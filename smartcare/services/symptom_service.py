@@ -1,14 +1,4 @@
-"""
-Rule-based symptom → department suggester. No external AI/ML service —
-just keyword matching against a curated map. Deliberately simple and
-transparent: the logic is auditable in one place, and it degrades
-gracefully (returns None) when nothing matches, rather than guessing.
-
-Keywords are kept short and atomic where possible (e.g. "muscle" instead
-of only "muscle pain") so that partial/substring phrasing from the user
-still matches — "muscle problems", "sore muscles", "muscle strain" all
-contain "muscle" and will match Orthopedics.
-"""
+"""Rule-based symptom to department mapping using keyword matching."""
 
 DEPARTMENT_KEYWORDS = {
     "Cardiology": [
@@ -58,12 +48,7 @@ DEPARTMENT_KEYWORDS = {
 
 
 def suggest_department(symptom_text):
-    """
-    Returns the department name with the most keyword matches, or None if
-    nothing matched. Ties are broken by dict insertion order above (so
-    Cardiology/Orthopedics/etc. are checked before the General Medicine
-    catch-all keywords).
-    """
+    """Return the best matching department, or None if no match is found."""
     if not symptom_text or not symptom_text.strip():
         return None
 

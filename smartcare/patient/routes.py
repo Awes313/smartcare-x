@@ -39,17 +39,12 @@ def _current_patient():
 @patient_bp.before_request
 @role_required(RoleEnum.PATIENT)
 def guard_patient_area():
-    """Runs before every route in this blueprint — keeps the role check in one place
-    instead of repeating @role_required on every view function below."""
+    """Restrict access to authenticated patients."""
     pass
 
 
 def _build_health_timeline(patient, limit=10):
-    """
-    Combines appointments, prescriptions, and lab reports into one
-    chronological feed — a single visual story of the patient's care,
-    instead of three disconnected lists.
-    """
+    """Build a unified timeline of patient activities."""
     events = []
 
     appointments = (
@@ -167,15 +162,7 @@ def book():
                 consultation_type=form.consultation_type.data,
             )
         except AppointmentConflictError as exc:
-            # Money for this booking was already captured by Razorpay
-            # (verify_payment_signature above succeeded) BEFORE this race
-            # condition was hit — someone else grabbed the slot first. The
-            # appointment never got created, so there's nothing to attach
-            # a normal consultation-fee bill to. Rather than silently
-            # losing track of a payment with no matching record, create a
-            # standalone bill (no appointment_id) already marked
-            # refund_pending, so it surfaces on the patient's dashboard
-            # and in admin's Refunds queue exactly like any other refund.
+            # Create a refund record if payment succeeds but the slot is no longer available.
             orphan_bill = create_bill(
                 patient_id=_current_patient().id,
                 generated_by_user_id=current_user.id,
@@ -220,9 +207,7 @@ def create_payment_order():
     doctor = Doctor.query.get_or_404(doctor_id)
     fee = doctor.consultation_fee or 0
 
-    # Validate the slot BEFORE opening Razorpay — catches a past date/time
-    # that slipped past the client-side check, so the patient is never
-    # charged for a slot that book_appointment() would reject anyway.
+    # Validate the selected slot before creating the payment order.
     appointment_date_str = request.form.get("appointment_date")
     time_slot = request.form.get("time_slot")
     if appointment_date_str and time_slot:
@@ -265,7 +250,7 @@ def suggest_department_api():
 
 @patient_bp.route("/appointments/available-slots")
 def available_slots_api():
-    """AJAX endpoint the booking form calls after doctor + date are chosen."""
+    """Return available slots for the selected doctor and date."""
     doctor_id = request.args.get("doctor_id", type=int)
     appointment_date = request.args.get("date", type=date.fromisoformat)
     if not doctor_id or not appointment_date:
@@ -286,9 +271,10 @@ def doctors_by_department_api():
 def cancel(appointment_id):
     appointment = Appointment.query.filter_by(id=appointment_id, patient_id=_current_patient().id).first_or_404()
     cancel_appointment(appointment)
-    # If the consultation fee was already paid, flag it for refund instead
-    # of silently keeping the patient's money for a visit that won't happen.
+
+    # Mark paid appointments for refund.
     mark_refund_pending(appointment)
+
     send_appointment_cancelled(appointment)
     flash("Appointment cancelled. If payment was already made, a refund has been initiated.", "info")
     return redirect(url_for("patient.dashboard"))
@@ -347,9 +333,7 @@ def download_prescription(prescription_id):
         id=prescription_id, patient_id=_current_patient().id
     ).first_or_404()
 
-    # If this prescription generated a medicine bill that's still
-    # unpaid/partial, send the patient to settle it first rather than
-    # letting them download proof of medicines they haven't paid for yet.
+    # Prevent prescription download until the related medicine bill is paid.
     pending_bill = Bill.query.filter_by(prescription_id=prescription.id).filter(
         Bill.status.in_(["unpaid", "partial"])
     ).first()
@@ -395,7 +379,7 @@ def download_lab_report(report_id):
 def profile():
     patient = _current_patient()
     form = ProfileUpdateForm(obj=current_user)
-    form.profile_photo.data = None  # obj= populates this with the stored filename string, not a real file
+    form.profile_photo.data = None  # Clear the stored filename; the file field expects a new upload.
 
     if request.method == "GET":
         form.date_of_birth.data = patient.date_of_birth

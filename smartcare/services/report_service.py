@@ -1,9 +1,3 @@
-"""
-Report aggregation logic. Every function returns plain Python data
-(lists of dicts / tuples) so the same result can feed an HTML table,
-a CSV export, or a PDF report without duplicating query logic.
-"""
-
 from datetime import date, timedelta
 from decimal import Decimal
 
@@ -52,10 +46,8 @@ def appointment_report(period="daily", reference_date=None):
 
 def revenue_report(period="monthly", reference_date=None):
     start, end = _date_range(period, reference_date)
-    # Voided bills (cancelled before any payment — see mark_refund_pending
-    # in billing_service.py) never represented real revenue and should
-    # never have been billed in the first place; including them here would
-    # inflate "Total Billed" with charges that were correctly wiped out.
+
+    # Exclude voided bills from revenue calculations.
     bills = (
         Bill.query.filter(func.date(Bill.created_at).between(start, end))
         .filter(Bill.status != "void")

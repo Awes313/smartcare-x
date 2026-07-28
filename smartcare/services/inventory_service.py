@@ -1,4 +1,4 @@
-"""Medicine inventory logic: stock deduction on prescribing, restocking, low-stock alerts."""
+"""Medicine inventory management."""
 
 from datetime import datetime
 
@@ -15,13 +15,7 @@ def deduct_stock(medicine_id, quantity):
     if inventory is None:
         raise InsufficientStockError("No inventory record found for this medicine.")
 
-    # Atomic conditional UPDATE — the availability check (quantity_in_stock
-    # >= quantity) and the decrement happen in ONE database statement, so
-    # two concurrent prescriptions for the same low-stock medicine can't
-    # both read "5 available" and both subtract 5, driving stock negative.
-    # Whichever request's UPDATE runs first wins; the second sees rowcount
-    # == 0 (the WHERE clause no longer matches) and fails cleanly instead
-    # of corrupting the stock count.
+    # Update stock atomically to prevent overselling during concurrent requests.
     result = db.session.execute(
         db.update(MedicineInventory)
         .where(

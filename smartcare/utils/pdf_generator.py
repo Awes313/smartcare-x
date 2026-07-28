@@ -1,10 +1,3 @@
-"""
-All PDF generation lives here, built on ReportLab (pure-Python, no system
-dependencies, so it deploys cleanly on Render). Every function returns raw
-PDF bytes — routes are responsible for wrapping them in a Flask Response
-with the right mimetype/filename.
-"""
-
 import io
 import json
 from datetime import datetime
@@ -63,7 +56,7 @@ def _base_table_style():
 
 
 def build_prescription_pdf(prescription):
-    """prescription: smartcare.models.prescription.Prescription instance"""
+    """Generate a prescription PDF."""
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=20 * mm, bottomMargin=20 * mm)
     elements = []
@@ -107,7 +100,7 @@ def build_prescription_pdf(prescription):
 
 
 def build_bill_receipt_pdf(bill):
-    """bill: smartcare.models.billing.Bill instance"""
+    """Generate a bill receipt PDF."""
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=20 * mm, bottomMargin=20 * mm)
     elements = []
@@ -148,11 +141,7 @@ def build_bill_receipt_pdf(bill):
 
 
 def build_tabular_report_pdf(title, headers, rows):
-    """
-    Generic report builder used by admin reports (daily/weekly/monthly,
-    revenue, doctor performance, patient statistics). `rows` is a list of
-    tuples/lists already formatted as strings by the report_service.
-    """
+    """Generate a tabular PDF report."""
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=20 * mm, bottomMargin=20 * mm)
     elements = []
@@ -169,14 +158,7 @@ def build_tabular_report_pdf(title, headers, rows):
 
 
 def build_generated_lab_report_pdf(report):
-    """
-    report: smartcare.models.medical_report.MedicalReport instance whose
-    results_json holds the doctor-entered test parameters and interpretation.
-
-    Built entirely from database fields (report.patient.full_name, etc.) —
-    there is no uploaded file involved, so the patient name in the PDF can
-    never mismatch the patient it's attached to.
-    """
+    """Generate a PDF from the report data stored in the database."""
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=20 * mm, bottomMargin=20 * mm)
     elements = []
@@ -218,7 +200,7 @@ def build_generated_lab_report_pdf(report):
     elements.append(Spacer(1, 10 * mm))
     elements.append(
         Paragraph(
-            "This is a system-generated report reflecting values entered by the ordering physician.",
+            "This report is generated from the patient's recorded test results.",
             ParagraphStyle("Small", parent=_body_style, fontSize=8, textColor=colors.grey),
         )
     )

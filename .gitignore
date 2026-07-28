@@ -13,6 +13,18 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
+# SQLite database
+instance/*.db
+
 # Generated uploads
 smartcare/static/uploads/profile_photos/*
 smartcare/static/uploads/lab_reports/*
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Log files
+*.log

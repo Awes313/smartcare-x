@@ -1,1 +1,1 @@
-"""Generic, framework-adjacent helpers shared across blueprints."""
+"""Shared utility functions."""

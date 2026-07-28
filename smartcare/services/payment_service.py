@@ -1,7 +1,4 @@
-"""
-Razorpay payment integration (test/sandbox mode). Isolates all Razorpay
-SDK calls in one place so routes never touch the SDK directly.
-"""
+"""Razorpay integration."""
 
 from decimal import Decimal
 
@@ -16,13 +13,7 @@ def _client():
 
 
 def create_order(amount_rupees, receipt):
-    """
-    amount_rupees: rupee amount (e.g. 500 for ₹500)
-    receipt: a short string identifying what this payment is for
-
-    Returns the Razorpay order dict, which includes 'id' (order_id).
-    Razorpay expects amount in the smallest currency unit (paise for INR).
-    """
+    """Create a Razorpay order."""
     amount_paise = int(Decimal(str(amount_rupees)) * 100)
     return _client().order.create(
         {
@@ -35,7 +26,7 @@ def create_order(amount_rupees, receipt):
 
 
 def verify_payment_signature(order_id, payment_id, signature):
-    """Returns True if the payment signature is authentic, False otherwise."""
+    """Verify the Razorpay payment signature."""
     try:
         _client().utility.verify_payment_signature(
             {

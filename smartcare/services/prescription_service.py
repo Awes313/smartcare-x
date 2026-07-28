@@ -1,19 +1,10 @@
-"""
-Prescription creation. Deliberately combines prescription persistence with
-inventory deduction in one transaction so a prescription is never saved
-without its stock being reserved (and vice versa).
-"""
-
 from smartcare.extensions import db
 from smartcare.models.prescription import Prescription, PrescriptionItem
 from smartcare.services.inventory_service import InsufficientStockError, deduct_stock
 
 
 def create_prescription(appointment, doctor_id, patient_id, diagnosis, notes, items):
-    """
-    items: list of dicts like
-        {"medicine_id": int, "dosage": str, "frequency": str, "duration_days": int, "quantity_to_deduct": int}
-    """
+    """Create a prescription and update inventory."""
     prescription = Prescription(
         appointment_id=appointment.id,
         doctor_id=doctor_id,
@@ -22,7 +13,7 @@ def create_prescription(appointment, doctor_id, patient_id, diagnosis, notes, it
         notes=notes,
     )
     db.session.add(prescription)
-    db.session.flush()  # get prescription.id before adding items
+    db.session.flush()  # Generate prescription ID before adding items.
 
     for item in items:
         prescription.items.append(
