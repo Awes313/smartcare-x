@@ -635,14 +635,15 @@ Contributions, feature suggestions, and bug reports are welcome.
 
 # 👨‍💻 Author
 
-### Mohammed Awes
+## Mohammed Awes
 
 **Python Backend Developer | Flask Developer | Full Stack Web Developer**
 
-- GitHub: https://github.com/Awes313
-- LinkedIn: https://linkedin.com/in/YOUR-LINKEDIN
-- Portfolio: https://YOUR-PORTFOLIO.com
-- Email: your-email@example.com
+I'm passionate about building scalable backend applications using **Python** and **Flask**, with a strong focus on clean architecture, database design, and real-world business logic. I enjoy developing complete web applications from frontend to backend and continuously improving my software development skills.
+
+- 🌐 **GitHub:** https://github.com/Awes313
+- 💼 **LinkedIn:** https://www.linkedin.com/in/awes313/
+- 📧 **Email:** mohamed7777awes@gmail.com
 
 ---
 
