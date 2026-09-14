@@ -202,8 +202,8 @@ SQL Database
 | Role | Email | Password |
 |---|---|---|
 | Admin | `admin@smartcarex.com` | `smartcarex@7777` |
-| Doctor (sample) | `drahmed@smartcarex.com` | `SmartCare@123` |
-| Patient (sample) | `patient.aarav@smartcarex.com` | `SmartCare@123` |
+| Doctor (sample) | `drahmed@smartcarex.com` | `Doctor@123` |
+| Patient (sample) | `awes51327@gmail.com` | `Rhydon7777` |
 
 ---
 
@@ -233,7 +233,6 @@ flask seed-db
 
 # Run the application
 flask run
-```
 
 ---
 
@@ -262,7 +261,7 @@ smartcare-x/
 ├── requirements.txt
 ├── Procfile
 └── README.md
-
+```
 ---
 
 # 📸 Project Screenshots
