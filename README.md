@@ -1,335 +1,274 @@
-<p align="center">
-<img src="screenshots/logo.png" width="180">
-</p>
-
 # 🏥 SmartCare X — Intelligent Hospital Management System
 
-A production-ready Hospital Management System built with **Python, Flask, SQLAlchemy, Bootstrap 5, Razorpay, and Jitsi Meet**.
+A full-featured hospital management platform built with **Python and Flask**, supporting patients, doctors, receptionists, and administrators in one connected system. The platform combines online and offline hospital workflows into a single, consistent system.
 
-SmartCare X provides an integrated healthcare platform where **patients, doctors, receptionists, and administrators** can manage appointments, billing, prescriptions, reports, medicines, and online video consultations from one centralized system.
+<p align="center">
+  <img src="screenshots/logo.png" width="180">
+</p>
 
-![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python)
-![Flask](https://img.shields.io/badge/Flask-Web_Framework-black?logo=flask)
-![Bootstrap](https://img.shields.io/badge/Bootstrap-5-purple?logo=bootstrap)
-![SQLite](https://img.shields.io/badge/SQLite-Database-blue?logo=sqlite)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Production-blue?logo=postgresql)
-![Razorpay](https://img.shields.io/badge/Razorpay-Payment-02042B?logo=razorpay)
-![Jitsi](https://img.shields.io/badge/Jitsi-Video_Meeting-97979A?logo=jitsi)
-![License](https://img.shields.io/badge/License-MIT-green)
+**Live Demo:** https://awes77.pythonanywhere.com
+
+**Core Skills:** Python · Flask · SQL · HTML · CSS · Bootstrap
 
 ---
 
-## 🌐 Live Demo
+## 📋 Table of Contents
 
-🌍 **Live Website:** https://awes77.pythonanywhere.com
-
----
-
-## ✨ Key Highlights
-
-- 👥 Role-Based Authentication (Admin, Doctor, Patient & Receptionist)
-- 📅 Online & Walk-in Appointment Management
-- 💳 Razorpay Payment Gateway Integration
-- 🎥 Online Video Consultation using Jitsi Meet
-- 💊 Medicine Inventory & Stock Management
-- 📝 Digital Prescriptions
-- 📄 Lab Reports
-- 📈 Analytics Dashboard
-- 📊 Reports Export (CSV & PDF)
-- 💰 Refund Management
-- 📧 Email Notifications
-- 📱 Fully Responsive Design
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Tech Stack](#tech-stack)
+- [Architecture Highlights](#architecture-highlights)
+- [Demo Credentials](#demo-credentials)
+- [Local Setup](#local-setup)
+- [Project Structure](#project-structure)
+- [Screenshots](#screenshots)
+- [Security](#security)
+- [Author](#author)
 
 ---
 
-# 📋 Table of Contents
+## 📌 Overview
 
-- Overview
-- Features
-- Technology Stack
-- Project Architecture
-- Screenshots
-- Installation
-- Folder Structure
-- Future Improvements
-- Author
+SmartCare X is a hospital management system designed to handle different hospital workflows through separate role-based dashboards.
 
-# 📖 Overview
+The system supports four main user roles:
 
-SmartCare X is a full-stack Hospital Management System designed to simplify healthcare operations through one unified platform.
+- **Admin** — manages users, doctors, departments, medicines, reports, refunds, and system activity.
+- **Doctor** — manages appointments, patient records, prescriptions, and availability.
+- **Patient** — books appointments, makes payments, views prescriptions and medical reports, and manages appointments.
+- **Receptionist** — handles walk-in patients, tokens, appointments, and counter billing.
 
-The system supports complete workflows for patients, doctors, receptionists, and administrators, allowing hospitals to efficiently manage appointments, billing, prescriptions, medicine inventory, reports, payments, and online consultations.
+The platform supports both **online** and **offline** hospital workflows.
 
-Unlike a basic CRUD application, SmartCare X simulates real-world hospital operations by combining online healthcare services with traditional hospital management in a single application.
+### 🌐 Online Workflow
 
----
+Patients can:
 
-# 🚀 Core Features
+1. Register and log in.
+2. Book an appointment.
+3. Pay consultation fees online.
+4. Attend video consultations when applicable.
+5. Receive prescriptions.
+6. Track medicine bills and payments.
+7. Access their medical records and reports.
 
-## 👤 Patient
+### 🏥 Offline Workflow
 
-- Register & Login securely
-- Book online appointments
-- Choose online or offline consultation
-- Secure payment using Razorpay
-- Join video consultation through Jitsi Meet
-- View appointment history
-- Download prescriptions
-- Download lab reports
-- Manage profile
-- Receive email notifications
+Receptionists can:
+
+1. Register walk-in patients.
+2. Assign appointment tokens.
+3. Handle consultation billing.
+4. Manage appointments at the reception desk.
+5. Process counter payments.
 
 ---
 
-## 👨‍⚕️ Doctor
+## 🚀 Key Features
 
-- Dashboard overview
-- View today's appointments
-- Approve or reject appointments
-- Generate digital prescriptions
-- Access patient medical history
-- Manage availability
-- Conduct online consultations
-- Track completed consultations
+### 👤 Patient
 
----
+- Self-registration with email verification
+- Online appointment booking
+- In-person and video consultation options
+- Rule-based symptom-to-department suggestion
+- Online consultation and medicine payments
+- Appointment rescheduling and cancellation
+- Digital prescriptions
+- System-generated medical reports in PDF format
+- Medicine bill tracking
+- Automatic payment reminders
+- Consolidated health timeline
+- Patient reviews
 
-## 🧑‍💼 Receptionist
+### 🩺 Doctor
 
-- Register walk-in patients
-- Create appointments
-- Generate bills
-- Manage patient queue
-- Handle counter payments
-- Manage appointment schedules
+- Appointment approval, rejection, and completion
+- Doctor availability management
+- Patient record management
+- Prescription creation
+- Searchable medicine selection
+- Dosage and frequency selection
+- Automatic medicine stock deduction
+- Patient-specific medical records
+- Video consultation access
+- Appointment state validation
+- Prevention of visit completion when required payments are pending
 
----
+### 🧑‍💼 Receptionist
 
-## 👨‍💼 Administrator
+- Walk-in patient registration
+- Automatic token assignment
+- Consultation fee billing
+- Counter billing
+- Cash, card, and UPI payment handling
+- Appointment management
+- Live token board
+- Patient registration and lookup
 
-- Dashboard & Analytics
-- Manage Users
-- Manage Doctors
-- Manage Departments
-- Manage Medicines
-- Generate Reports
-- Refund Management
-- Audit Logs
-- Revenue Tracking
-- System Configuration
+### 🛡️ Admin
 
----
-
-# 💻 Tech Stack
-
-| Category | Technologies |
-|----------|--------------|
-| **Backend** | Python, Flask, Flask-Login, Flask-WTF, Flask-Mail, Flask-Migrate |
-| **Frontend** | HTML5, CSS3, Bootstrap 5, JavaScript |
-| **Database** | SQLAlchemy ORM, SQLite (Development), PostgreSQL (Production Ready) |
-| **Authentication** | Flask-Login, Werkzeug Password Hashing |
-| **Payments** | Razorpay (Sandbox/Test Mode) |
-| **Video Consultation** | Jitsi Meet |
-| **Charts & Analytics** | Chart.js |
-| **PDF Generation** | ReportLab |
-| **Background Scheduler** | APScheduler |
-| **Email Services** | SMTP (Flask-Mail) |
-| **Version Control** | Git & GitHub |
-| **Deployment** | PythonAnywhere |
-
----
-
-# 🏗️ System Architecture
-
-SmartCare X follows a modular Flask architecture using Blueprints and SQLAlchemy ORM. Every user role has its own dashboard, permissions, and business logic while sharing a common database and service layer.
-
-### Main Modules
-
-- Authentication & Authorization
-- Patient Management
-- Doctor Management
-- Reception Management
-- Appointment Management
-- Billing & Payments
-- Medicine Inventory
-- Prescription Management
-- Laboratory Reports
-- Analytics Dashboard
-- Refund Management
-- Contact & Feedback System
-- Activity Logs
+- Admin dashboard with analytics
+- User management
+- Doctor management
+- Department management
+- Medicine inventory management
+- Appointment management
+- Refund management
+- Revenue and appointment reports
+- CSV/PDF report exports
+- Contact message management
+- Audit and activity logs
+- Financial record management
 
 ---
 
-## Workflow Overview
+## 🛠️ Tech Stack
+
+### Core Skills
+
+| Technology | Usage |
+|---|---|
+| **Python** | Backend development, business logic, validation, automation, and application functionality |
+| **Flask** | Web application framework, routing, authentication, role-based dashboards, and application structure |
+| **SQL** | Managing hospital data, relationships, appointments, patients, doctors, prescriptions, billing, and inventory |
+| **HTML** | Building the structure and content of web pages |
+| **CSS** | Styling, layouts, spacing, responsiveness, and custom UI design |
+| **Bootstrap** | Responsive layouts, navigation, forms, tables, cards, dashboards, and reusable UI components |
+
+### Integrations
+
+- **Razorpay** — Online payment processing for consultation and medicine bills
+- **Jitsi Meet** — Video consultation functionality
+- **Flask-Mail** — Email notifications and payment reminders
+- **ReportLab** — PDF report generation
+- **APScheduler** — Automated background tasks such as payment reminders
+
+---
+
+## 🗄️ Database
+
+The application uses a relational database to store and manage structured hospital data.
+
+SQL-based database operations are used for:
+
+- Patient and doctor information
+- User accounts and roles
+- Departments
+- Appointments
+- Prescriptions
+- Medicines and inventory
+- Bills and payments
+- Medical reports
+- Reviews
+- Notifications
+- Audit and activity records
+
+The database structure maintains relationships between different parts of the hospital system, allowing information such as appointments, prescriptions, billing, and patient records to remain connected.
+
+---
+
+## 🏗️ Architecture
+
+SmartCare X follows a modular Flask application structure:
 
 ```text
-Patient
-   │
-   ▼
-Book Appointment
-   │
-   ▼
-Doctor Approval
-   │
-   ├────────────► Online Consultation (Jitsi)
-   │
-   ▼
-Prescription
-   │
-   ▼
-Medicine Billing
-   │
-   ▼
-Payment (Razorpay / Reception)
-   │
-   ▼
-Lab Reports
-   │
-   ▼
-Patient Dashboard
-```
+app.py
+   ↓
+Application Factory
+   ↓
+Configuration
+   ↓
+Flask Extensions
+   ↓
+Blueprints
+   ├── Main
+   ├── Authentication
+   ├── Patient
+   ├── Doctor
+   ├── Reception
+   └── Admin
+   ↓
+Business Logic / Services
+   ↓
+Database Models
+   ↓
+SQL Database
 
 ---
 
-# 📁 Project Structure
+## 🔑 Demo Credentials
 
-```text
-smartcare-x/
-│
-├── app.py
-├── config.py
-├── requirements.txt
-├── README.md
-├── .env.example
-├── migrations/
-├── instance/
-├── screenshots/
-│
-├── smartcare/
-│   │
-│   ├── admin/
-│   ├── auth/
-│   ├── doctor/
-│   ├── patient/
-│   ├── reception/
-│   ├── main/
-│   ├── models/
-│   ├── services/
-│   ├── templates/
-│   ├── static/
-│   ├── forms/
-│   ├── utils/
-│   └── emails/
-│
-└── profile/
-```
+| Role | Email | Password |
+|---|---|---|
+| Admin | `admin@smartcarex.com` | `smartcarex@7777` |
+| Doctor (sample) | `drahmed@smartcarex.com` | `SmartCare@123` |
+| Patient (sample) | `patient.aarav@smartcarex.com` | `SmartCare@123` |
 
 ---
 
-# ⚙️ Local Installation
-
-## Clone Repository
+## ⚙️ Local Setup
 
 ```bash
+# Clone the repository
 git clone https://github.com/Awes313/smartcare-x.git
-
 cd smartcare-x
-```
 
----
-
-## Create Virtual Environment
-
-### Windows
-
-```bash
+# Create and activate a virtual environment
 python -m venv venv
+venv\Scripts\activate      # Windows
+source venv/bin/activate   # macOS/Linux
 
-venv\Scripts\activate
-```
-
-### Linux / macOS
-
-```bash
-python3 -m venv venv
-
-source venv/bin/activate
-```
-
----
-
-## Install Dependencies
-
-```bash
+# Install dependencies
 pip install -r requirements.txt
-```
 
----
+# Configure environment variables
+cp .env.example .env
 
-## Configure Environment Variables
-
-Create a `.env` file and configure:
-
-```env
-SECRET_KEY=your_secret_key
-
-MAIL_USERNAME=your_email
-
-MAIL_PASSWORD=your_password
-
-RAZORPAY_KEY_ID=your_key
-
-RAZORPAY_KEY_SECRET=your_secret
-```
-
----
-
-## Apply Database Migration
-
-```bash
+# Apply database migrations
 flask db upgrade
-```
 
----
-
-## Seed Demo Data
-
-```bash
+# Seed demo data
 flask seed-db
-```
 
----
-
-## Run the Project
-
-```bash
+# Run the application
 flask run
 ```
 
-Open your browser and visit
-
-```
-http://127.0.0.1:5000
-```
-
 ---
 
-# 🔑 Demo Credentials
+📁 Project Structure
 
-| Role | Email | Password |
-|------|-------|----------|
-| **Admin** | admin@smartcarex.com | smartcarex@7777 |
-| **Doctor** | drahmed@smartcarex.com | SmartCare@123 |
-| **Patient** | patient.aarav@smartcarex.com | SmartCare@123 |
-
-> **Note:** These credentials are for demonstration purposes only.
+smartcare-x/
+├── app.py
+├── config.py
+├── smartcare/
+│   ├── models/
+│   ├── auth/
+│   ├── patient/
+│   ├── doctor/
+│   ├── reception/
+│   ├── admin/
+│   ├── main/
+│   ├── services/
+│   ├── utils/
+│   ├── emails/
+│   └── templates/
+├── migrations/
+├── screenshots/
+├── .env.example
+├── .gitignore
+├── LICENSE
+├── requirements.txt
+├── Procfile
+└── README.md
 
 ---
 
 # 📸 Project Screenshots
 
 ## 🏠 Home Page
+
 The landing page showcasing SmartCare X services, featured doctors, departments, testimonials, and quick access to appointments.
 
 <p align="center">
@@ -339,6 +278,7 @@ The landing page showcasing SmartCare X services, featured doctors, departments,
 ---
 
 ## 👨‍⚕️ Doctors Directory
+
 Browse available doctors with specialization, consultation fees, and profile information.
 
 <p align="center">
@@ -348,6 +288,7 @@ Browse available doctors with specialization, consultation fees, and profile inf
 ---
 
 ## 📞 Contact Page
+
 Patients can send inquiries or feedback directly to the hospital administration.
 
 <p align="center">
@@ -357,6 +298,7 @@ Patients can send inquiries or feedback directly to the hospital administration.
 ---
 
 ## 🛡️ Admin Dashboard
+
 Centralized dashboard for managing users, doctors, appointments, revenue, and hospital analytics.
 
 <p align="center">
@@ -366,6 +308,7 @@ Centralized dashboard for managing users, doctors, appointments, revenue, and ho
 ---
 
 ## 👨‍⚕️ Manage Doctors
+
 Add, edit, activate, or deactivate doctors while assigning departments and consultation fees.
 
 <p align="center">
@@ -375,6 +318,7 @@ Add, edit, activate, or deactivate doctors while assigning departments and consu
 ---
 
 ## 👥 Manage Users
+
 Manage patients, receptionists, and administrators with secure role-based access.
 
 <p align="center">
@@ -384,6 +328,7 @@ Manage patients, receptionists, and administrators with secure role-based access
 ---
 
 ## 💊 Medicine Management
+
 Maintain medicine inventory, stock levels, pricing, and availability.
 
 <p align="center">
@@ -393,6 +338,7 @@ Maintain medicine inventory, stock levels, pricing, and availability.
 ---
 
 ## 📊 Reports Dashboard
+
 Generate and export reports related to appointments, revenue, medicines, and patients.
 
 <p align="center">
@@ -402,6 +348,7 @@ Generate and export reports related to appointments, revenue, medicines, and pat
 ---
 
 ## 💸 Refund Management
+
 Manage cancelled appointment refunds and monitor payment status.
 
 <p align="center">
@@ -411,6 +358,7 @@ Manage cancelled appointment refunds and monitor payment status.
 ---
 
 ## 📝 Audit Logs
+
 Track important activities performed by administrators and hospital staff.
 
 <p align="center">
@@ -420,6 +368,7 @@ Track important activities performed by administrators and hospital staff.
 ---
 
 ## 👨‍⚕️ Doctor Dashboard
+
 Doctors can manage appointments, prescriptions, schedules, and patient records.
 
 <p align="center">
@@ -429,6 +378,7 @@ Doctors can manage appointments, prescriptions, schedules, and patient records.
 ---
 
 ## 📅 Today's Appointments
+
 Quick overview of scheduled appointments with status tracking.
 
 <p align="center">
@@ -438,6 +388,7 @@ Quick overview of scheduled appointments with status tracking.
 ---
 
 ## 💊 Write Prescription
+
 Doctors can create digital prescriptions with medicines, dosage, and treatment instructions.
 
 <p align="center">
@@ -447,6 +398,7 @@ Doctors can create digital prescriptions with medicines, dosage, and treatment i
 ---
 
 ## 📋 Patient Records
+
 Access patient medical history, prescriptions, and consultation details securely.
 
 <p align="center">
@@ -456,6 +408,7 @@ Access patient medical history, prescriptions, and consultation details securely
 ---
 
 ## 👤 Patient Dashboard
+
 Patients can view appointments, prescriptions, bills, reports, and health history.
 
 <p align="center">
@@ -465,6 +418,7 @@ Patients can view appointments, prescriptions, bills, reports, and health histor
 ---
 
 ## 📅 Appointment Booking
+
 Book online or in-person appointments by selecting doctor, date, and consultation type.
 
 <p align="center">
@@ -474,7 +428,8 @@ Book online or in-person appointments by selecting doctor, date, and consultatio
 ---
 
 ## 📄 Prescriptions & Lab Reports
-Patients can download prescriptions and laboratory reports in PDF format.
+
+Patients can access their prescriptions and generated medical reports.
 
 <p align="center">
 <img src="screenshots/prescriptions-labreports.png" width="900">
@@ -483,7 +438,8 @@ Patients can download prescriptions and laboratory reports in PDF format.
 ---
 
 ## 🧑‍💼 Reception Dashboard
-Receptionists manage walk-in registrations, appointments, billing, and patient flow.
+
+Receptionists can manage walk-in patients, tokens, appointments, and billing.
 
 <p align="center">
 <img src="screenshots/reception-dashboard.png" width="900">
@@ -491,8 +447,9 @@ Receptionists manage walk-in registrations, appointments, billing, and patient f
 
 ---
 
-## 💳 Billing Management
-Manage consultation fees, medicine bills, and payment records efficiently.
+## 🧾 Billing Management
+
+Manage consultation and medicine bills with payment status tracking.
 
 <p align="center">
 <img src="screenshots/billing-management.png" width="900">
@@ -500,8 +457,9 @@ Manage consultation fees, medicine bills, and payment records efficiently.
 
 ---
 
-## 📆 Manage Appointments
-View, approve, cancel, and reschedule appointments with real-time status updates.
+## 📅 Manage Appointments
+
+Manage hospital appointments and monitor appointment status.
 
 <p align="center">
 <img src="screenshots/manage-appointments.png" width="900">
@@ -509,8 +467,9 @@ View, approve, cancel, and reschedule appointments with real-time status updates
 
 ---
 
-## 💰 Razorpay Payment Integration
-Secure online payment gateway integration for appointment and medicine billing.
+## 💳 Razorpay Payment
+
+Online payment interface for consultation and medicine bills.
 
 <p align="center">
 <img src="screenshots/razorpay-payment.png" width="900">
@@ -519,7 +478,8 @@ Secure online payment gateway integration for appointment and medicine billing.
 ---
 
 ## 🎥 Jitsi Video Consultation
-Built-in telemedicine support using Jitsi Meet for secure online doctor consultations.
+
+Video consultation interface for online doctor appointments.
 
 <p align="center">
 <img src="screenshots/jitsi-video-consultation.png" width="900">
@@ -528,155 +488,67 @@ Built-in telemedicine support using Jitsi Meet for secure online doctor consulta
 ---
 
 ## 📱 Mobile Responsive View
-Responsive user interface optimized for smartphones, tablets, and desktop devices.
+
+Responsive interface optimized for different screen sizes.
 
 <p align="center">
-<img src="screenshots/mobile-responsive-view.png" width="350">
+<img src="screenshots/mobile-responsive-view.png" width="500">
 </p>
 
 ---
 
----
+## ⭐ Key Highlights
 
-# ✨ Key Highlights
-
-- 🏥 Complete Hospital Management Platform
-- 👥 Multi-Role Authentication (Admin, Doctor, Patient & Receptionist)
-- 📅 Online & Walk-in Appointment Management
-- 💳 Razorpay Payment Gateway Integration
-- 🎥 Jitsi Meet Video Consultation
-- 💊 Smart Medicine Inventory Management
-- 📄 Digital Prescriptions & Lab Reports
-- 📊 Interactive Admin Analytics Dashboard
-- 📧 Automated Email Notifications
-- 📱 Fully Responsive Design
-- 🔐 Secure Role-Based Access Control
-- ⚡ Modular Flask Blueprint Architecture
-- 🗂️ SQLAlchemy ORM with Migration Support
-- 🚀 Production-Ready Project Structure
+- Role-based dashboards for Admin, Doctor, Patient, and Receptionist
+- Online and offline hospital workflows
+- Appointment booking with conflict handling
+- Online payments using Razorpay
+- Video consultations using Jitsi Meet
+- Medicine inventory and billing management
+- Digital prescriptions and medical reports
+- Automated payment reminders
+- PDF and CSV report generation
+- Audit and activity logging
+- Responsive interface using HTML, CSS, and Bootstrap
 
 ---
 
-# 🔒 Security Features
+## 🔐 Security
 
-- Password Hashing using Werkzeug
-- Role-Based Authentication & Authorization
-- CSRF Protection using Flask-WTF
-- Secure Session Management
-- Protected Admin Routes
-- Input Validation & Form Validation
-- SQLAlchemy ORM to Prevent SQL Injection
-- Secure Token-Based Email Verification
-- Environment Variable Configuration
-- Login Required Decorators
-
----
-
-# 🚀 Future Improvements
-
-- AI Symptom Checker
-- Online Pharmacy Module
-- Doctor Availability Calendar
-- SMS Appointment Reminders
-- Insurance Claim Management
-- Multi-Hospital Support
-- Electronic Health Records (EHR)
-- REST API for Mobile Applications
-- Docker Deployment
-- CI/CD Pipeline using GitHub Actions
+- Role-based authentication and authorization
+- Secure password hashing
+- Email verification for user accounts
+- Protected routes based on user roles
+- CSRF protection for forms
+- Secure payment signature verification
+- Account activation and deactivation controls
+- Backend validation for important operations
+- Restricted access to patient medical records
+- Audit logging for important system activities
 
 ---
 
-# 🛠️ Built With
+## 👨‍💻 Author
 
-- Python
-- Flask
-- SQLAlchemy
-- SQLite
-- PostgreSQL
-- Bootstrap 5
-- JavaScript
-- Chart.js
-- Razorpay
-- Jitsi Meet
-- ReportLab
-- APScheduler
+**Mohammed Awes Tadas**
+
+- 💻 GitHub: https://github.com/Awes313
+- 🔗 LinkedIn: https://www.linkedin.com/in/awes313/
+- 📧 Email: mohamed7777awes@gmail.com
 
 ---
 
-# 📈 Project Statistics
-
-| Feature | Status |
-|---------|--------|
-| Authentication System | ✅ |
-| Multi-Role Dashboards | ✅ |
-| Appointment Management | ✅ |
-| Telemedicine | ✅ |
-| Razorpay Integration | ✅ |
-| Medicine Inventory | ✅ |
-| Billing System | ✅ |
-| Reports Generation | ✅ |
-| Analytics Dashboard | ✅ |
-| Responsive UI | ✅ |
-
----
-
-# 🤝 Contributing
-
-Contributions, feature suggestions, and bug reports are welcome.
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push the branch
-5. Open a Pull Request
-
----
-
-# 👨‍💻 Author
-
-## Mohammed Awes
-
-**Python Backend Developer | Flask Developer | Full Stack Web Developer**
-
-I'm passionate about building scalable backend applications using **Python** and **Flask**, with a strong focus on clean architecture, database design, and real-world business logic. I enjoy developing complete web applications from frontend to backend and continuously improving my software development skills.
-
-- 🌐 **GitHub:** https://github.com/Awes313
-- 💼 **LinkedIn:** https://www.linkedin.com/in/awes313/
-- 📧 **Email:** mohamed7777awes@gmail.com
-
----
-
-# 📄 License
+## 📄 License
 
 This project is licensed under the **MIT License**.
 
 ---
 
-# 🙏 Acknowledgements
+## 🙏 Acknowledgements
 
-Special thanks to the open-source community and the creators of:
-
-- Flask
-- Bootstrap
-- SQLAlchemy
+- Flask documentation and community
+- Bootstrap documentation
 - Razorpay
 - Jitsi Meet
-- Chart.js
-- ReportLab
+- Python community
 
----
-
-## ⭐ Support
-
-If you found this project useful, please consider giving it a ⭐ on GitHub.
-
-It motivates me to continue building more open-source projects.
-
----
-
-<p align="center">
-<b>⭐ Thank you for visiting SmartCare X ⭐</b>
-
-Built with ❤️ using Python & Flask
-</p>
